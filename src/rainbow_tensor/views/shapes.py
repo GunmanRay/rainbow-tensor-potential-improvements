@@ -18,7 +18,7 @@ from ..indexing import (
 from ..renderers import resolve_renderer
 from ..shape import extract_shape
 from ..theme import resolve_theme
-from ..visual import _preview_explanation, _value_fn_for, _visual
+from ..visual import _preview_explanation, _value_fn_for, _visual, _shape_caption_parts
 
 
 def _shape_label_parts(shape, theme):
@@ -135,6 +135,78 @@ def index(array, index, theme=None, precision=2, renderer=None):
     label_parts = _index_label_parts(index, theme)
     content = renderer.render_tensor(
         shape=normalized,
+        selected=selected,
+        value_fn=value_fn,
+        label_parts=label_parts,
+        explanation=explanation,
+        theme=theme,
+        precision=precision,
+    )
+    return _visual(
+        content, normalized, renderer, selected=selected, result=result, explanation=explanation
+    )
+
+# This implementation might suck, but is meant for testing. I just need to know how to resolve
+# API conflicts. 
+
+def index_arrow(array, index, theme=None, precision=2, renderer=None):
+    theme = resolve_theme(theme)
+    renderer = resolve_renderer(renderer)
+    normalized = extract_shape(array)
+    value_fn = _value_fn_for(array)
+
+    if is_advanced(index, normalized):
+        selected, result, explanation = advanced_index(normalized, index)
+        explanation = explanation + _preview_explanation([normalized], theme)
+        label = "mask" if not isinstance(index, tuple) else f"Index ({format_index(index)})"
+        panels = [
+            {
+                "shape": normalized,
+                "value_fn": value_fn,
+                "caption_parts": _shape_caption_parts("source", normalized, theme),
+            },
+            {
+                "shape": result,
+                "value_fn": _value_fn_for(result),
+                "caption_parts": _shape_caption_parts("index", result, theme),
+            },
+        ]
+
+        content = renderer.render_panels(
+            panels=panels,
+            selected=selected,
+            value_fn=value_fn,
+            label=label,
+            explanation=explanation,
+            theme=theme,
+            precision=precision,
+        )
+        return _visual(
+            content, normalized, renderer, selected=selected, result=result, explanation=explanation
+        )
+
+    # This part just deals w/ the indexes
+    validate_index(index, normalized)
+    selected = selected_coordinates(normalized, index)
+    result = result_shape(normalized, index)
+    explanation = explain_index(normalized, index) + _preview_explanation([normalized], theme)
+    label_parts = _index_label_parts(index, theme)
+
+    panels = [
+        {
+            "shape": normalized,
+            "value_fn": value_fn,
+            "caption_parts": _shape_caption_parts("source", normalized, theme),
+        },
+        {
+            "shape": result,
+            "value_fn": _value_fn_for(result),
+            "caption_parts": _shape_caption_parts("index", result, theme),
+        },
+    ]
+
+    content = renderer.render_panels(
+        panels=panels,
         selected=selected,
         value_fn=value_fn,
         label_parts=label_parts,
