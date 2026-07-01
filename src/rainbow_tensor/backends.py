@@ -5,6 +5,7 @@ mostly agree on ``.shape``, but scalar extraction varies. These helpers keep
 that duck typing in one small place so the notebook layer stays readable.
 """
 
+# Perhaps rearranging the order of functions for readability sake
 
 def value_at_coordinate(array, coord):
     """Return the Python value at ``coord`` from an array-like object."""

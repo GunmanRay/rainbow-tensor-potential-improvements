@@ -55,7 +55,7 @@ def _is_array_like(entry):
         return True
     return hasattr(entry, "shape") and _shape_of(entry) != ()
 
-
+# May neeed to be extended for other types of bool
 def _is_bool(value):
     """True for a Python bool or a NumPy boolean scalar, without importing it."""
     return isinstance(value, bool) or type(value).__name__.startswith("bool")
