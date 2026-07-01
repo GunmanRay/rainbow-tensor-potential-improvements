@@ -11,11 +11,12 @@ from .combining import broadcast, concatenate, repeat, stack, take
 from .einsum import einsum
 from .reductions import matmul, mean, sum
 from .reshaping import expand_dims, moveaxis, reshape, squeeze, swapaxes, transpose
-from .shapes import index, shape
+from .shapes import index, shape, index_arrow
 
 __all__ = [
     "shape",
     "index",
+    "index_arrow",
     "reshape",
     "transpose",
     "swapaxes",

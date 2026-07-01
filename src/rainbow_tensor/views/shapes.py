@@ -166,16 +166,17 @@ def index_arrow(array, index, theme=None, precision=2, renderer=None):
                 "caption_parts": _shape_caption_parts("source", normalized, theme),
             },
             {
-                "shape": result,
-                "value_fn": _value_fn_for(result),
-                "caption_parts": _shape_caption_parts("index", result, theme),
+                "shape": normalized,
+                "selected": selected,
+                "value_fn": _value_fn_for(normalized),
+                "caption_parts": _shape_caption_parts("index", normalized, theme),
+                "label": label,
             },
         ]
 
         content = renderer.render_panels(
             panels=panels,
-            selected=selected,
-            value_fn=value_fn,
+            connectors=["->"],
             label=label,
             explanation=explanation,
             theme=theme,
@@ -199,17 +200,18 @@ def index_arrow(array, index, theme=None, precision=2, renderer=None):
             "caption_parts": _shape_caption_parts("source", normalized, theme),
         },
         {
-            "shape": result,
-            "value_fn": _value_fn_for(result),
-            "caption_parts": _shape_caption_parts("index", result, theme),
+            "shape": normalized,
+            "selected": selected,
+            "value_fn": value_fn,
+            "caption_parts": _shape_caption_parts("index", normalized, theme),
+            "label_parts": label_parts,
         },
     ]
 
     content = renderer.render_panels(
         panels=panels,
-        selected=selected,
-        value_fn=value_fn,
-        label_parts=label_parts,
+        connectors=["->"],
+        # label_parts=label_parts,
         explanation=explanation,
         theme=theme,
         precision=precision,
